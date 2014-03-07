@@ -1,0 +1,49 @@
+* {
+	box-sizing:border-box;
+}
+
+#board {
+	padding-top: 30px;
+	height:90px;
+	width:90px;
+	margin:0px;
+	padding:0px;
+	/* yayyy inline block */
+	font-size:0px;
+	text-align: center;
+}
+
+
+
+
+.block {
+	width:30px;
+	height:30px;
+	display:inline-block;
+	margin:0px;
+	padding:0px;
+	font-size: 12px;
+	text-align: middle;
+	vertical-align: middle;
+	/*border:1px black solid;*/
+}
+
+.top {
+	border-bottom:solid black 1px;
+}
+
+.right {
+	border-left:solid black 1px;
+}
+
+.left {
+	border-right:solid black 1px;
+}
+
+.mid, .center {
+}
+
+.bottom {
+	border-top:solid black 1px;
+}
+

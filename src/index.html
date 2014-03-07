@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+<html>
+<head>
+<title> Tic Tac Flow </title>
+<link rel="stylesheet" href="css/other.css">
+<script>document.write('<script src="http://' + (location.host || 'localhost').split(':')[0] + ':35729/livereload.js?snipver=1"></' + 'script>')</script>
+</head>
+<body>
+
+<!-- lets include backbone, jquery, underscore -->
+<!-- temporary... -->
+<script src="../bower_components/jquery/dist/jquery.min.js"></script>
+<script src="../bower_components/underscore/underscore.js"></script>
+<script src="../bower_components/backbone/backbone.js"></script>
+
+
+<div id= "board">
+</div>
+
+
+<script>
+
+var Square = Backbone.Model.extend({
+	initialize : function(){
+		console.log("initializing");
+	}
+});
+
+
+var Board = Backbone.View.extend({
+
+    el: $('#board'),  		
+    
+    // idName: "board",
+
+  	events: {
+    	"click .block": "click",
+  	},
+
+  	click : function(e){
+  		e.preventDefault();
+  		e.stopPropagation();
+  		console.log($(e.currentTarget).attr("class"));
+  	},
+
+  	template: "<div class='block top left'/><div class='block top mid'/><div class='block top right'/>"
+  		+ "<div class='block center left'/><div class='block center mid'/><div class='block center right'/>"
+  		+ "<div class='block bottom left'/><div class='block bottom mid'/><div class='block bottom right'/>",
+
+  	initialize: function() {
+	    // this.listenTo(this.model, "change", this.render);
+  	},
+
+  	render: function() {
+  		var template = _.template( this.template );
+        this.$el.append( template );
+  	}
+
+});
+
+var b = new Board();
+b.render();
+console.log(b.events);
+var s = new Square();
+console.log(s);
+</script>
+
+</body>
+</html>
