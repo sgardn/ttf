@@ -1,0 +1,63 @@
+
+
+.d {
+    -webkit-transition: all .75s ease;
+    /* -webkit-transform: rotate(0deg); */
+    display:inline-block;
+    color:red;
+
+}
+
+.d.spin {
+    -webkit-transition: all .75s ease;
+    -webkit-transform: rotate(90deg);
+     -moz-transform: rotate(90deg);
+    transform: rotate(90deg); 
+}
+
+
+@font-face {
+	font-family: kelt;
+	src: url(keltn.ttf);
+}
+
+@font-face {
+	font-family: rings;
+	src: url(rings.ttf);
+}
+
+ul,li,span,div{
+	font-family:kelt;
+	font-size: 20px;
+}
+
+*{
+	box-sizing:border-box;
+	margin: 5 0 0 0px;
+}
+
+h1{
+	font-size: 50px;
+	margin: 0px;
+	font-family:rings;
+}
+
+.focus {
+	color: blue;
+}
+
+.dest {
+	min-height: 100px;
+	padding:12px;
+	vertical-align: middle;
+}
+
+.timer{
+	font-size:22px;
+}
+
+ul.child-list{
+	/*color:blue;*/
+	margin:0px;
+
+}

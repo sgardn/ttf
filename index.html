@@ -1,0 +1,208 @@
+<!DOCTYPE html>
+<html>
+<head>
+<title> Recursive Lists </title>
+<link rel="stylesheet" href="other.css">
+
+</head>
+<body>
+
+<!-- lets include backbone, jquery, underscore -->
+<!-- temporary... -->
+<script src="../bower_components/jquery/dist/jquery.min.js"></script>
+<script src="../bower_components/underscore/underscore.js"></script>
+<script src="../bower_components/backbone/backbone.js"></script>
+
+
+<!-- 
+<script src="/bower_components/requirejs/require.js" data-main="/src/requirejs/secondary"></script>
+ -->
+<!-- this uses our alternative require config file, let's see if it works... -->
+
+<script type="text/template" id="list-template">
+    <span id="show">
+    <%= typeof text != 'undefined' ?  text : 'filler text...' %>
+    </span>
+</script>
+
+
+
+<h1>
+How do we make recursive lists...
+</h1>
+<br/>
+
+<div class="dest"></div>
+
+
+<script type="text/javascript">
+
+
+var List = Backbone.Model.extend({
+	
+	defaults : {
+		text : "empty...",
+		children : []
+	},
+
+	initialize : function(obj) {
+		if(obj !== undefined){
+			// console.log("initializing a List");
+			// console.log(obj);
+			// we need to conditionalize this by whether our children are already 
+			// items or not, in which case if we try to "new" them again, BAD
+			var cs = [];
+			if(obj.children !== undefined){
+				// console.log(" obj.children !== undefined");
+				// console.log(obj.children);
+				_.each(obj.children, function(a){
+					cs.push(new List(a));
+				});
+			} else {
+				// console.log(" obj.children === undefined");
+			}
+			if(cs.length != 0){
+				this.set({children:cs});
+				// console.log(this.get("obj.children"));
+			} 
+		} else {
+			console.log("CANNOT CREATE, obj is undefined");
+		}
+	},
+
+	print : function(acc){
+		if((typeof acc) == "undefined"){
+			console.log("top level print...");
+			acc = "";
+		}
+		console.log(acc + this.get("text"));		
+		_.each(this.get("children"), function(c){
+			c.print(" - "+acc);
+		});
+	}
+});
+
+var ListView = Backbone.View.extend({
+	tagName : "div",
+	// className : "timer",
+
+	model : this.model,
+    
+    template: _.template($('#list-template').html()),
+	// template: _.template("<span id='show'><%= typeof text == 'undefined' ? 'undef' : text  %></span>"),
+	events : {
+		"click #show": "showHide",
+	},
+
+	initialize : function(obj) {
+		// console.log("initializing our ListView");
+		obj = obj || {};
+		// console.log(obj);
+    	_.bindAll(this, "render", "renderChild");
+    	if(obj.model !== undefined){
+    		// console.log("obj.model is defined... just use that...");
+    		this.model = obj.model;
+    	} else {
+    		// console.log("obj is straight JSON... have to create new Model");
+    		this.model = new List(obj);
+    	}
+
+    	this.model.bind('change', this.render);
+    	this.focused = false;
+    	
+    	var _template = "<span class='meta-title d'><%= text %> </span>";
+                _template += "<% if (children && children.length) { %> ";
+                _template += "<i id='show' class='fa fa-chevron-right d'/><ul class='child-list'></ul>";           
+                _template += "<% } %>";
+     	this.template = _.template(_template);
+	},
+
+	print : function() {
+		this.model.print();
+	},
+
+	showHide : function(e) {
+		// e.preventDefault();
+		// console.log(e);
+		this.$el.children(".fa-chevron-right").toggleClass("focus").toggleClass("spin");
+		e.stopPropagation();
+		this.focused = !this.focused;
+		if(this.focused) {
+			this.show();
+		} else {
+			this.hide();
+		}
+	},
+
+	show : function(){
+		console.log("\n\nshowing");
+		// console.log("toggling => focused:"+this.focused);
+		this.renderChildren();
+	},
+
+	hide : function(){
+		console.log("\n\nhiding");
+		this.hideChildren();
+	},
+
+	hideChildren : function(){
+		this.$el.children(".child-list").hide();
+	},
+
+    renderChild : function(child){
+    	console.log("\nRENDER child");
+    	// need to convert model into a view and then call render on it...
+    	// console.log(child); // model
+    	// console.log(this);  // view context
+    	this.$el.children(".child-list").show()
+    		.append((new ListView({model:child})).render());
+    	return this;
+    }, 
+
+    renderChildren : function(){
+		//  test if we have children, then render them
+		if(this.focused){
+			console.log("rendering children");
+			if(this.model.get("children").length != 0 ){
+				console.log("FOUND CHILDREN IN RENDER");
+				_.each(this.model.get("children"), this.renderChild );
+			} 
+		} else {
+// need to fade out our child elements...
+		}
+		
+    },
+
+	render : function() {
+		console.log("\nRENDERING..");
+		// console.log(this.model);
+		this.$el.html(this.template(this.model.toJSON()));
+		if(this.focused){
+			this.renderChildren();
+		}
+		// if we use this.model.toJSON() that means that we can just access 
+		// properties once we're inside the template
+		// $(".dest").empty().html(this.$el);
+		// this.delegateEvents();
+		//  todo
+		//  need to figure out how to 
+    	return this.el;
+	}
+
+});
+
+var leaf = {"text":"leaffff"};
+var branch = {"text":"branch", "children":[leaf, leaf]};
+var tree = {"text":"way up high", "children":[branch]};
+
+// List => ({text:value}, children:[List])
+
+var t = new ListView(tree);
+$(".dest").append(t.render());
+// t.print();
+
+</script>
+
+
+</body>
+</html>
