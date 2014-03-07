@@ -11,10 +11,9 @@
 	/* yayyy inline block */
 	font-size:0px;
 	text-align: center;
+	margin:80px auto;
+
 }
-
-
-
 
 .block {
 	width:30px;

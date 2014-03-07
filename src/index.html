@@ -14,55 +14,32 @@
 <script src="../bower_components/backbone/backbone.js"></script>
 
 
+
 <div id= "board">
 </div>
+
+<!-- el can't bind to id if it doesn't exist yet -->
+<script src="js/models/square.js"></script>
+<script src="js/collections/grid.js"></script>
+<script src="js/views/board.js"></script>
+
 
 
 <script>
 
-var Square = Backbone.Model.extend({
-	initialize : function(){
-		console.log("initializing");
-	}
-});
-
-
-var Board = Backbone.View.extend({
-
-    el: $('#board'),  		
-    
-    // idName: "board",
-
-  	events: {
-    	"click .block": "click",
-  	},
-
-  	click : function(e){
-  		e.preventDefault();
-  		e.stopPropagation();
-  		console.log($(e.currentTarget).attr("class"));
-  	},
-
-  	template: "<div class='block top left'/><div class='block top mid'/><div class='block top right'/>"
-  		+ "<div class='block center left'/><div class='block center mid'/><div class='block center right'/>"
-  		+ "<div class='block bottom left'/><div class='block bottom mid'/><div class='block bottom right'/>",
-
-  	initialize: function() {
-	    // this.listenTo(this.model, "change", this.render);
-  	},
-
-  	render: function() {
-  		var template = _.template( this.template );
-        this.$el.append( template );
-  	}
-
-});
-
 var b = new Board();
+
+console.log("our Board is b");
+
 b.render();
-console.log(b.events);
+
 var s = new Square();
-console.log(s);
+
+// console.log(s);
+// s.set("piece", "X");
+// console.log(s.get("piece"));
+// console.log(s.get("decay"));
+
 </script>
 
 </body>
