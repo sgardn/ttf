@@ -7,4 +7,3 @@ As players place pieces, the players oldest piece is remvoved if there are alrea
 
   * npm install
   * bower install
-  * comment out livereload snippet
