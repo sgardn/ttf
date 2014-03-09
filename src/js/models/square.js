@@ -9,20 +9,25 @@ var Square = Backbone.Model.extend({
 	},
 
 	changing : function(){
-		console.log("changing...");
-		// test if our new value for piece is none
-		// if it is none, do nothing
-		// else, set the decay of the piece to six or whatever
+		// this.changed stores the object with properties for all attributes changed
+		if(this.changed.piece != "none"){
+			// console.log("setting decay to 6 for a "+this.changed.piece);
+			this.set("decay", 7);
+			// todo make sure this is the right number...
+		}
 	},
 
 	age : function() {
-		if(this.decay > 0){
-			this.decay = this.decay-1;
+		if(this.get("decay") > 0){
+			this.set("decay", this.get("decay") - 1);
 		}
-		if(this.decay == 0){
-			this.piece = "none";
+		if(this.get("decay") == 0){
+			this.set("piece", "none");
 		}
 		return this;
+	}, 
+	log : function() {
+		console.log(this.get("piece")+" "+this.get("decay"));
 	}
 
 });

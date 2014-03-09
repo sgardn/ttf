@@ -13,42 +13,169 @@ var Board = Backbone.View.extend({
       + "<div class='block bottom left'/><div class='block bottom mid'/><div class='block bottom right'/>",
   
     initialize: function() {
-      // this.listenTo(this.model, "change", this.render);
       this.model = new Grid();
+      this.gameOver = false;
+      // this.on("click .block", this.click);
       for (var i=0;i<9;i++) { 
-        this.model.add(new Square(), {"at":i}); 
+        this.model.add(new Square());
       }
+      // this.model.on( "change:piece", this.render, this);
+      // cannot run this on change else once the first piece ages out of existence it calls age for the rest
+      this.whoseMove = "X";
+      this.showMove();
+    },
 
-      console.log(this.model.length);
-      console.log(this.model.at(0));
-      // starts at 0...
+    showMove : function(){
+      $("#status").html("<h1>It's "+this.whoseMove+"'s turn to play</h1>");
+    },
+
+    changeMove : function() {
+      if(this.whoseMove == "X") {
+        this.whoseMove = "O";
+      } else {
+        this.whoseMove = "X";
+      }
+      this.showMove();
+    },
+
+    parseClick : function(classes){
+      var indx = 0;
+      if(classes.match(/mid/)){
+        indx += 1;
+      }
+      if(classes.match(/right/)){
+        indx += 2; 
+      }
+      if(classes.match(/center/)){
+        indx += 3;
+      }
+      if(classes.match(/bottom/)){
+        indx += 6;
+      }
+      // console.log("click parsed to have index of "+indx);
+      return indx;
     },
 
   	click : function(e){
+
   		e.preventDefault();
   		e.stopPropagation();
-  		console.log($(e.currentTarget).attr("class"));
+      if(!this.gameOver){
+        var classes = $(e.currentTarget).attr("class");
+        var indx = this.parseClick(classes);
+        this.play(this.whoseMove, indx);  
+      }
   	},
 
-    //precondition: this
-    play : function(piece, at){
-      console.log("playing "+piece+" at "+at);
-
+    play : function(piece, index){
+      // console.log("playing "+piece+" at "+index);
+      // for some reason we can play on a square that is decay of 1
+      var p = this.model.at(index);
+      if(p.get("decay") == 0){
+        if(p.get("piece") != "none"){
+          throw "broken square piece";
+        } else {
+          p.set("piece", piece);
+          this.render();
+          this.changeMove();
+          this.checkWin(index, piece);
+        }
+      } else {
+        console.log("cannot place here...")
+        // p.log();
+      }
     },
-  	
-  	
+
+    renderSquare : function(m, i){
+      // console.log("rendering square");
+      var classes = ".block";
+      if(i%3 == 0){
+        classes += ".left";
+      } else if(i%3 == 1){
+        classes += ".mid";
+      } else {
+        classes += ".right";
+      }
+
+      if(i/3 >= 2){
+        classes+=".bottom";
+      } else if (i/3 < 1){
+        classes+=".top";
+      } else {
+        classes+=".center";
+      }
+      
+      // console.log(this.$el);
+      // console.log("trying to render a move at "+classes);
+      this.$el.children(classes).html("<span>"+m.get("piece")+" "+m.get("decay") +"</span>");
+      
+
+      
+      // .html("{ "+ m.get("piece") +", "+ m.get("decay")/2 +" }");
+    },
 
   	render: function() {
+      // console.log("<< RENDER >>");
       var m;
   		var template = _.template( this.template );
+      this.$el.html( template );
+      var index = 1;
       for(var i=0; i<9; i++){
-        // returns the model that we have at that point
         m = this.model.at(i);
-        m.age();
-        m.set("piece", "X");
-        console.log("decay: "+m.get("decay")+"\npiece: "+m.get("piece"));
+        if(m.get("decay")>0){
+          m.age();
+          if(m.get("decay")!=0){
+            this.renderSquare(m, i);          
+          }
+        }
+        m = this.model.at(index);
+        // console.log("decay: "+m.get("decay")+"\npiece: "+m.get("piece"));
       }
-      this.$el.append( template );
-  	}
+  	},
+    
+    checkWin : function(i, p){
+      // console.log("checking win ");
+      // console.log(i, p);
+      var w = this.checkRow(i, p) || this.checkColumn(i, p) || this.checkDiagonal(i, p);
+      if(w){
+        this.gameOver = true;
+        $("#status").html("<h1> "+p+" has won!</h1>");
+      }
+    },
+
+    checkRow : function(i, p){
+      var row = Math.floor(i / 3);
+      var ans = true;
+      for(var i=0; i<3; i++){
+        ans = ans && (this.model.at(row*3+i).get("piece") == p);
+      }
+      return ans;
+    },
+
+    checkColumn : function(i, p){
+      var column = i % 3;
+      var ans = true;
+      for(var i=0; i<3; i++){
+        ans = ans && (this.model.at(column+i*3).get("piece") == p);
+      }
+      return ans;
+    },
+
+    checkDiagonal : function(i, p){
+      var ans = true;
+      if(i == 0 || i == 4 || i == 8){
+        ans = ans && (this.model.at(0).get("piece") == p);
+        ans = ans && (this.model.at(4).get("piece") == p);
+        ans = ans && (this.model.at(8).get("piece") == p);
+        if(ans) return ans;
+      }
+      if(i == 2 || i == 4 || i == 6){
+        ans = ans && (this.model.at(2).get("piece") == p);
+        ans = ans && (this.model.at(4).get("piece") == p);
+        ans = ans && (this.model.at(6).get("piece") == p);
+        if(ans) return ans;
+      }
+      return false;
+    }
 
 });
