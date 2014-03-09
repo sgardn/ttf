@@ -18,7 +18,7 @@ var Board = Backbone.View.extend({
       // this.on("click .block", this.click);
       for (var i=0;i<9;i++) { 
         this.model.add(new Square());
-      }
+      } 
       // this.model.on( "change:piece", this.render, this);
       // cannot run this on change else once the first piece ages out of existence it calls age for the rest
       this.whoseMove = "X";
@@ -52,12 +52,10 @@ var Board = Backbone.View.extend({
       if(classes.match(/bottom/)){
         indx += 6;
       }
-      // console.log("click parsed to have index of "+indx);
       return indx;
     },
 
   	click : function(e){
-
   		e.preventDefault();
   		e.stopPropagation();
       if(!this.gameOver){
@@ -68,8 +66,6 @@ var Board = Backbone.View.extend({
   	},
 
     play : function(piece, index){
-      // console.log("playing "+piece+" at "+index);
-      // for some reason we can play on a square that is decay of 1
       var p = this.model.at(index);
       if(p.get("decay") == 0){
         if(p.get("piece") != "none"){
@@ -82,12 +78,10 @@ var Board = Backbone.View.extend({
         }
       } else {
         console.log("cannot place here...")
-        // p.log();
       }
     },
 
     renderSquare : function(m, i){
-      // console.log("rendering square");
       var classes = ".block";
       if(i%3 == 0){
         classes += ".left";
@@ -96,7 +90,6 @@ var Board = Backbone.View.extend({
       } else {
         classes += ".right";
       }
-
       if(i/3 >= 2){
         classes+=".bottom";
       } else if (i/3 < 1){
@@ -104,18 +97,12 @@ var Board = Backbone.View.extend({
       } else {
         classes+=".center";
       }
-      
-      // console.log(this.$el);
-      // console.log("trying to render a move at "+classes);
-      this.$el.children(classes).html("<span>"+m.get("piece")+" "+m.get("decay") +"</span>");
-      
-
-      
-      // .html("{ "+ m.get("piece") +", "+ m.get("decay")/2 +" }");
+      // ez mode
+      // this.$el.children(classes).html("<span class='piece smaller'>"+m.get("piece")+" "+m.get("decay") +"</span>");
+      this.$el.children(classes).html("<span class='piece'>"+m.get("piece")+"</span>");
     },
 
   	render: function() {
-      // console.log("<< RENDER >>");
       var m;
   		var template = _.template( this.template );
       this.$el.html( template );
@@ -129,13 +116,10 @@ var Board = Backbone.View.extend({
           }
         }
         m = this.model.at(index);
-        // console.log("decay: "+m.get("decay")+"\npiece: "+m.get("piece"));
       }
   	},
     
     checkWin : function(i, p){
-      // console.log("checking win ");
-      // console.log(i, p);
       var w = this.checkRow(i, p) || this.checkColumn(i, p) || this.checkDiagonal(i, p);
       if(w){
         this.gameOver = true;
@@ -177,5 +161,4 @@ var Board = Backbone.View.extend({
       }
       return false;
     }
-
 });

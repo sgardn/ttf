@@ -11,9 +11,7 @@ var Square = Backbone.Model.extend({
 	changing : function(){
 		// this.changed stores the object with properties for all attributes changed
 		if(this.changed.piece != "none"){
-			// console.log("setting decay to 6 for a "+this.changed.piece);
 			this.set("decay", 7);
-			// todo make sure this is the right number...
 		}
 	},
 
@@ -25,9 +23,5 @@ var Square = Backbone.Model.extend({
 			this.set("piece", "none");
 		}
 		return this;
-	}, 
-	log : function() {
-		console.log(this.get("piece")+" "+this.get("decay"));
 	}
-
 });
