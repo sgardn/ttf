@@ -9,7 +9,7 @@
   "repository": "",
   "author": "scott gardner",
   "license": "BSD",
-  "devDependencies": {
-    "bower": "~1.2.8"
+  "dependencies": {
+    "bower": "~1.2.8",
   }
 }
