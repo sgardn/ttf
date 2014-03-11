@@ -4,9 +4,9 @@
 <title> Tic Tac Flow </title>
 <link rel="stylesheet" href="css/main.css">
 <link rel="shortcut icon" type="image/png" href="css/favicon.ico"/>
-<!--
+
 <script>document.write('<script src="http://' + (location.host || 'localhost').split(':')[0] + ':35729/livereload.js?snipver=1"></' + 'script>')</script>
--->
+
 </head>
 <body>
 
@@ -23,11 +23,12 @@
 
 <script src="js/models/square.js"></script>
 <script src="js/collections/grid.js"></script>
+<script src="js/views/squareView.js"></script>
 <script src="js/views/board.js"></script>
 
 <script>
 
-var b = new Board();
+var b = new Board({sideLength: 3});
 console.log("our Board is b");
 b.render();
 
