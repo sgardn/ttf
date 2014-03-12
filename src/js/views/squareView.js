@@ -12,19 +12,14 @@ var SquareView = Backbone.View.extend({
 	initialize : function(model, options){
 		this.model = model;
 		this.parent = options.parent;
-		// this.model.bind("change:piece", this.parent.render);
-		// this.model.bind("change:piece", this.parent.render, this.model.index);
 		this.classes = this.genClasses();
 	},
 
 	click : function(e){
-		e.preventDefault();
 		e.stopPropagation();
-		// console.log(this.classes);
 		if(this.model.get("piece") === "none"){
-			console.log("setting this.model piece");
 			this.model.set("piece", this.parent.whoseMove);
-			this.trigger('newPiece', [this.model.get("index")]);
+			this.trigger('newPiece', this.model.get("index"));
 		} else {
 			console.log("click somewhere else...");
 		}
@@ -34,19 +29,16 @@ var SquareView = Backbone.View.extend({
 		console.log("rendering SquareView");
 		var tmp = _.extend(this.model.toJSON(), {classes : this.classes});
 		var template = _.template(this.template);
-		this.setElement(template(tmp), true);
-		// true flag will delegate events
+		this.setElement(template(tmp), true); // true flag will delegate events
 		return this;
 	},
 
 	genClasses : function(){
 		var i = this.model.get("index");
 		var side = this.model.get("side");
-
 		var row = Math.floor(i / side);
 		var column = i % side;
 		var classes = "block";
-
 		if(row === 0) {
 			classes += " top";
 		} else if( row === side - 1){
@@ -54,7 +46,6 @@ var SquareView = Backbone.View.extend({
 		} else {
 			classes += " middle";
 		}
-
 		if(column === 0){
 			classes += " left";
 		} else if (column === side - 1){
