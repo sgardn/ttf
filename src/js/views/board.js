@@ -27,7 +27,6 @@ var Board = Backbone.View.extend({
 
     newPiece : function(i) {
         if(!this.gameOver){
-            console.log("need to re render at "+i);
             this.render(i);
             this.checkWin(i, this.whoseMove);
             this.changeMove();
@@ -51,10 +50,13 @@ var Board = Backbone.View.extend({
     },
 
     render: function(i) {
+
+        // TODO -- change render so it doesn't rerender all child views, only those with models?
+        // investigate more efficient re rendering...
+
         this.collection.each(function(c){
             c.age();
         });
-        console.log("parent render running");
         var that = this;
         this.$el.empty();
         _.each(this.children, (function(c){

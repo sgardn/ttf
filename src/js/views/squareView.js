@@ -26,7 +26,6 @@ var SquareView = Backbone.View.extend({
 	},
 
 	render : function(){
-		console.log("rendering SquareView");
 		var tmp = _.extend(this.model.toJSON(), {classes : this.classes});
 		var template = _.template(this.template);
 		this.setElement(template(tmp), true); // true flag will delegate events
