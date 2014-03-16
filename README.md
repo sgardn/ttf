@@ -9,3 +9,4 @@ To get started, run:
 
   * npm install
   * bower install
+  

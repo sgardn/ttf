@@ -10,6 +10,6 @@
   "author": "scott gardner",
   "license": "BSD",
   "dependencies": {
-    "bower": "~1.2.8",
+    "bower": "~1.2.8"
   }
 }
